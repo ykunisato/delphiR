@@ -4,15 +4,13 @@
 \alias{set_delphi}
 \title{Set template files for delphi questionnaire}
 \usage{
-set_delphi(task_name = "task_name", jsPsych_version = "7.2.1", use_rc = TRUE)
+set_delphi(dir_name = "dir_name", jsPsych_version = "7.2.1")
 }
 \arguments{
-\item{task_name}{name of task}
+\item{dir_name}{name of directory}
 
 \item{jsPsych_version}{If you set a specific version number of jsPsych,
 set_jsPsych prepare a file with that version of jsPsych.}
-
-\item{use_rc}{If you don"t use the RC, set FALSE.}
 }
 \description{
 Set template files for delphi questionnaire
