@@ -1,13 +1,21 @@
 #' @title Set template files for delphi questionnaire
 #' @importFrom utils download.file
 #' @importFrom utils unzip
+#' @param inst instruction
+#' @param question question
+#' @param max_response maximum number of response
+#' @param min_response minimum number of response
 #' @param dir_name name of directory
 #' @param jsPsych_version If you set a specific version number of jsPsych,
 #'                set_jsPsych prepare a file with that version of jsPsych.
-#' @examples # set_delphi("round1","7.2.1")
+#' @examples # set_round1()
 #' @export
-set_delphi <- function(dir_name = "dir_name",
-                     jsPsych_version = "7.2.1"){
+set_round1 <- function(inst,
+                       question,
+                       max_response = 10,
+                       min_response = 5,
+                       dir_name = "round1",
+                       jsPsych_version = "7.2.1"){
   # check jsPsych version
   if(jsPsych_version=="7.1.1"||jsPsych_version=="7.1.2"||jsPsych_version=="7.2.1"){
   }else{
@@ -80,12 +88,29 @@ set_delphi <- function(dir_name = "dir_name",
     unlink(temp_jsPsych)
     ## download js files
     file_path <- paste0(path,"/",dir_name)
-    download.file(paste0("https://raw.githubusercontent.com/ykunisato/template-jsPsych-task/main/template-jsPsych",substr(jsPsych_version, 1, 3),"/name_of_repository/task.js"),paste0(file_path,"/task.js"))
     download.file(paste0("https://raw.githubusercontent.com/ykunisato/template-jsPsych-task/main/template-jsPsych",substr(jsPsych_version, 1, 3),"/name_of_repository/demo_jspsych_init.js"),paste0(file_path,"/demo_jspsych_init.js"))
     download.file(paste0("https://raw.githubusercontent.com/ykunisato/template-jsPsych-task/main/template-jsPsych",substr(jsPsych_version, 1, 3),"/name_of_repository/demo_jspsych_run.js"),paste0(file_path,"/demo_jspsych_run.js"))
     download.file(paste0("https://raw.githubusercontent.com/ykunisato/template-jsPsych-task/main/template-jsPsych",substr(jsPsych_version, 1, 3),"/name_of_repository/jatos_jspsych_init.js"),paste0(file_path,"/jatos_jspsych_init.js"))
     download.file(paste0("https://raw.githubusercontent.com/ykunisato/template-jsPsych-task/main/template-jsPsych",substr(jsPsych_version, 1, 3),"/name_of_repository/jatos_jspsych_run.js"),paste0(file_path,"/jatos_jspsych_run.js"))
     download.file(paste0("https://raw.githubusercontent.com/ykunisato/template-jsPsych-task/main/template-jsPsych",substr(jsPsych_version, 1, 3),"/name_of_repository/jspsych/plugin-survey-matrix-likert.js"),paste0(file_path,"/jspsych/dist/plugin-survey-matrix-likert.js"))
+    ## make task.js file
+    tmp_taskJs <- file(file.path(file_path, paste0("task.js")), "w")
+    writeLines("var question = {", tmp_taskJs)
+    writeLines(" type: jsPsychSurveyText,", tmp_taskJs)
+    instruction <- paste0(" preamble:'", inst,"',")
+    writeLines(instruction, tmp_taskJs)
+    writeLines("questions: [", tmp_taskJs)
+    question1 <- paste0("  {prompt:'", question,"', rows: 4, required: true},")
+    for (i in 1:min_response) {
+      writeLines(question1, tmp_taskJs)
+    }
+    question2 <- paste0("  {prompt:'", question,"', rows: 4},")
+    for (i in 1:(max_response-min_response)) {
+      writeLines(question2, tmp_taskJs)
+    }
+    writeLines("]}", tmp_taskJs)
+    writeLines("const timeline = [question];", tmp_taskJs)
+    close(tmp_taskJs)
     ## make stimli directory and picture
     dir.create(file.path(file_path, "stimuli"), showWarnings = FALSE)
     stim_path <- paste0(file_path,"/stimuli")
