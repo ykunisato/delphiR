@@ -98,15 +98,15 @@ set_round1 <- function(inst,
     writeLines("var question = {", tmp_taskJs)
     writeLines(" type: jsPsychSurveyText,", tmp_taskJs)
     instruction <- paste0(" preamble:'", inst,"',")
-    writeLines(instruction, tmp_taskJs)
+    writeLines(instruction, tmp_taskJs, useBytes=T)
     writeLines("questions: [", tmp_taskJs)
     question1 <- paste0("  {prompt:'", question,"', rows: 4, required: true},")
     for (i in 1:min_response) {
-      writeLines(question1, tmp_taskJs)
+      writeLines(question1, tmp_taskJs, useBytes=T)
     }
     question2 <- paste0("  {prompt:'", question,"', rows: 4},")
     for (i in 1:(max_response-min_response)) {
-      writeLines(question2, tmp_taskJs)
+      writeLines(question2, tmp_taskJs, useBytes=T)
     }
     writeLines("]}", tmp_taskJs)
     writeLines("const timeline = [question];", tmp_taskJs)
